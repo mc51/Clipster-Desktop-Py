@@ -123,7 +123,9 @@ Clipster will add an Icon to your system tray which you can click for opening up
 
 ## Planned features
 
-- Encrypt clipboard locally and only transmit encrypted data to server  
+- Sign Windows release to suppress warning  
+- Sign MacOS release to suppress warning
+- Encrypt clipboard locally and only transmit encrypted data to server
 - iOS Client
 
 
