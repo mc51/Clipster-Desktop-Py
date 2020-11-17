@@ -12,15 +12,15 @@ if current_os == "Windows":
 
 # Setup logging to rotating files of 10MB and console output
 log = logging.getLogger("clipster")
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.WARNING)
 
 ch = logging.StreamHandler()
 
 rfh = logging.FileHandler(LOG_FILE)
 rfh = logging.handlers.RotatingFileHandler(LOG_FILE, maxBytes=10097152, backupCount=5)
 
-ch.setLevel(logging.DEBUG)
-rfh.setLevel(logging.DEBUG)
+ch.setLevel(logging.WARNING)
+rfh.setLevel(logging.WARNING)
 
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
