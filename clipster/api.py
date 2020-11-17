@@ -1,0 +1,148 @@
+import requests
+import pyperclip
+import json
+
+try:
+    # for package import
+    from .log_config import log
+    from .config import Config
+except ModuleNotFoundError:
+    # for direct call of clipster.py
+    from log_config import log
+    from config import Config
+
+
+class ApiException(Exception):
+    """ All exceptions occuring when dealing with API
+    """
+
+    pass
+
+
+class RegisterException(Exception):
+    """ Could not register user
+    """
+
+    pass
+
+
+class LoginException(Exception):
+    """ Could not login user
+    """
+
+    pass
+
+
+class Api:
+    """ Deal with API requests and local clipboard
+    """
+
+    SERVER = None
+    USER = None
+    PW = None
+
+    def __init__(self, server, user, pw):
+        self.SERVER = server
+        self.USER = user
+        self.PW = pw
+
+    def copy(self):
+        """
+        Return the current clipboard text
+        """
+        data = pyperclip.paste()
+        return data
+
+    def upload(self):
+        """
+        Send the copied text to SERVER
+        """
+        clip = self.copy()
+        payload = {"text": clip, "device": f"{Config.DEVICE_ID}"}
+        try:
+            res = requests.post(
+                self.SERVER + "/copy-paste/",
+                data=payload,
+                auth=(self.USER, self.PW),
+                timeout=Config.CONN_TIMEOUT,
+            )
+        except requests.exceptions.RequestException as e:
+            log.exception("Error in upload request")
+            raise ApiException(e)
+        else:
+            if res.status_code == 200:
+                log.info("Success! Copied to Cloud-Clipboard.")
+                return clip
+            else:
+                log.error(f"Error cannot upload clip: {res.text}")
+                raise ApiException(res.text)
+
+    def paste(self, data):
+        """
+        Copies 'data' to local clipboard which enables pasting.
+        """
+        pyperclip.copy(data)
+
+    def download(self):
+        """
+        Downloads from SERVER and updates the local clipboard.
+        """
+        log.info("downloading clip")
+        try:
+            res = requests.get(
+                self.SERVER + "/copy-paste/",
+                auth=(self.USER, self.PW),
+                timeout=Config.CONN_TIMEOUT,
+            )
+        except requests.exceptions.RequestException as e:
+            log.exception("Error in download request")
+            raise ApiException(e)
+        else:
+            if res.status_code == 200:
+                clip = json.loads(res.text)["text"]
+                log.info(f"Got new clip from SERVER:\n{clip}")
+                self.paste(clip)
+                return clip
+            else:
+                log.error(f"Cannot download clip: {res.status_code} - {res.text}")
+                raise ApiException(res.text)
+
+    @staticmethod
+    def register(server, user, pw):
+        """
+        register user on SERVER
+        """
+        payload = {"user": user, "pw": pw}
+        try:
+            res = requests.post(
+                server + "/register/", data=payload, timeout=Config.CONN_TIMEOUT,
+            )
+        except requests.exceptions.RequestException as e:
+            log.exception("Error in register request")
+            raise RegisterException(e)
+        if res.status_code == 201:
+            log.info(f"Hi {user}! You are all set.")
+            if Config.write_config(server, user, pw):
+                return True
+        else:
+            log.error(f"Cannot register user: {res.status_code} - {res.text}")
+            raise RegisterException(res.text)
+
+    @staticmethod
+    def login(server, user, pw):
+        """
+        authenticate user
+        """
+        try:
+            res = requests.get(
+                server + "/verify-user/", auth=(user, pw), timeout=Config.CONN_TIMEOUT
+            )
+        except requests.exceptions.RequestException as e:
+            log.exception("Error in login request")
+            raise LoginException(e)
+        if res.status_code >= 200 and res.status_code < 400:
+            log.info("Login successful")
+            return True
+        else:
+            log.error(f"Login failed: {res.status_code} - {res.text}")
+            raise LoginException(res.text)
