@@ -69,10 +69,12 @@ class Config:
         return False
 
     @classmethod
-    def write_config(cls, server, username, password, verify_ssl=True):
+    def write_config(cls, server, username, password):
         """ Write config file and save modification time
         """
-        log.debug(f"Writing config file: {server} {username} {password} {verify_ssl}")
+        log.debug(
+            f"Writing config file: {server} {username} {password} {cls.VERIFY_SSL_CERT}"
+        )
         cls.PATH_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         cls.PATH_CONFIG_FILE.touch(exist_ok=True)
         config = configparser.ConfigParser()
