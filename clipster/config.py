@@ -29,7 +29,7 @@ class Config:
     SERVER = None
     USER = None
     PW = None
-    VERIFY_SSL_CERT = False
+    VERIFY_SSL_CERT = True
 
     def __init__(self):
         pass
@@ -60,6 +60,7 @@ class Config:
                 cls.SERVER = conf.get("settings", "server")
                 cls.USER = conf.get("settings", "username")
                 cls.PW = conf.get("settings", "password")
+                cls.VERIFY_SSL_CERT = conf.getboolean("settings", "verify_ssl_cert")
             except (configparser.NoSectionError, KeyError):
                 return False
             if cls.SERVER and cls.USER and cls.PW:
@@ -68,10 +69,10 @@ class Config:
         return False
 
     @classmethod
-    def write_config(cls, server, username, password):
+    def write_config(cls, server, username, password, verify_ssl=True):
         """ Write config file and save modification time
         """
-        log.debug(f"Writing config file: {server} {username} {password}")
+        log.debug(f"Writing config file: {server} {username} {password} {verify_ssl}")
         cls.PATH_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         cls.PATH_CONFIG_FILE.touch(exist_ok=True)
         config = configparser.ConfigParser()
@@ -79,6 +80,7 @@ class Config:
             "server": server,
             "username": username,
             "password": password,
+            "verify_ssl_cert": cls.VERIFY_SSL_CERT,
         }
         with open(cls.PATH_CONFIG_FILE, "w") as configfile:
             config.write(configfile)

@@ -48,7 +48,11 @@ class Gui:
             ],
             [
                 sg.Text("Disable SSL certificate check: ", size=(30, 1)),
-                sg.Checkbox("(only check if using your own server)", key="ssl",),
+                sg.Checkbox(
+                    "(only check if using your own server)",
+                    default=not Config.VERIFY_SSL_CERT,
+                    key="ignore_cert",
+                ),
             ],
             [
                 sg.Text("Username: ", size=(30, 1)),
@@ -80,7 +84,7 @@ class Gui:
         window = sg.Window(
             title=f"{Config.APP_NAME} - Enter credentials for registration / login",
             layout=self.create_cred_layout(),
-            size=(450, 150),
+            size=(500, 150),
             icon=Config.ICON_B64,
         )
         while not self.check_cred(window):
@@ -161,9 +165,23 @@ class Gui:
             Config.write_config(server, user, pw)
             return True
 
+    def set_config_ignore_ssl_cert(self, ignore_cert):
+        """ Set config option to ignore ssl certificate validty in requests
+
+        Args:
+            ignore_cert (bool): Ignore SSL certificate
+        """
+        Config.VERIFY_SSL_CERT = not ignore_cert
+
     def check_cred(self, window):
-        """ given credentials input check if we can perform action of
+        """ Given credentials input check if we can perform action of
             login or registration on server
+
+        Args:
+            window (PySimpleGUIQt.Window): GUI-Window asking for creds
+
+        Returns:
+            bool: True if credentials are valid, else False
         """
         event, values = window.read()
         log.debug(f"{event} - {values}\n\n")
@@ -171,6 +189,7 @@ class Gui:
             log.debug("Credentials entry canceled")
             return True
         else:
+            self.set_config_ignore_ssl_cert(values.get("ignore_cert"))
             if self.is_cred_input_valid(values):
                 server, user, pw = self.is_cred_input_valid(values)
                 if event == "Login":
