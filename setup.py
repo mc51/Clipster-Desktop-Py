@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="clipster-desktop",
-    version="0.1.0",
+    version="0.2.0",
     description="Multi Platform Cloud Clipboard - Linux Client",
     url="http://github.com/mc51/Clipster-Desktop",
     author="MC51",
