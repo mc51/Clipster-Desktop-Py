@@ -29,6 +29,7 @@ class Config:
     SERVER = None
     USER = None
     PW = None
+    VERIFY_SSL_CERT = False
 
     def __init__(self):
         pass

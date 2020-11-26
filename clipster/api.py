@@ -65,6 +65,7 @@ class Api:
                 data=payload,
                 auth=(self.USER, self.PW),
                 timeout=Config.CONN_TIMEOUT,
+                verify=Config.VERIFY_SSL_CERT,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in upload request")
@@ -93,6 +94,7 @@ class Api:
                 self.SERVER + "/copy-paste/",
                 auth=(self.USER, self.PW),
                 timeout=Config.CONN_TIMEOUT,
+                verify=Config.VERIFY_SSL_CERT,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in download request")
@@ -115,7 +117,10 @@ class Api:
         payload = {"user": user, "pw": pw}
         try:
             res = requests.post(
-                server + "/register/", data=payload, timeout=Config.CONN_TIMEOUT,
+                server + "/register/",
+                data=payload,
+                timeout=Config.CONN_TIMEOUT,
+                verify=Config.VERIFY_SSL_CERT,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in register request")
@@ -135,7 +140,10 @@ class Api:
         """
         try:
             res = requests.get(
-                server + "/verify-user/", auth=(user, pw), timeout=Config.CONN_TIMEOUT
+                server + "/verify-user/",
+                auth=(user, pw),
+                timeout=Config.CONN_TIMEOUT,
+                verify=Config.VERIFY_SSL_CERT,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in login request")

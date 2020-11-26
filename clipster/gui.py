@@ -43,20 +43,27 @@ class Gui:
 
         layout = [
             [
-                sg.Text("Server address: ", size=(10, 1)),
+                sg.Text("Server address: ", size=(30, 1)),
                 sg.InputText(default_text=self.def_server, key="server", size=(25, 1)),
             ],
             [
-                sg.Text("Username: ", size=(10, 1)),
-                sg.InputText(default_text=self.def_user, key="user", size=(20, 1)),
+                sg.Text("Disable SSL certificate check: ", size=(30, 1)),
+                sg.Checkbox("(only check if using your own server)", key="ssl",),
             ],
             [
-                sg.Text("Password: ", size=(10, 1)),
-                sg.InputText(default_text=self.def_pw, key="pw", size=(20, 1)),
+                sg.Text("Username: ", size=(30, 1)),
+                sg.InputText(default_text=self.def_user, key="user", size=(25, 1)),
             ],
-            [sg.Button("Register")],
-            [sg.Button("Login")],
-            [sg.Cancel()],
+            [
+                sg.Text("Password: ", size=(30, 1)),
+                sg.InputText(default_text=self.def_pw, key="pw", size=(25, 1)),
+            ],
+            [sg.Text("")],
+            [
+                sg.Button("Login", size=(18, 1)),
+                sg.Button("Register", size=(18, 1)),
+                sg.Cancel(size=(18, 1)),
+            ],
         ]
         return layout
 
