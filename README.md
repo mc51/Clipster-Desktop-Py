@@ -10,6 +10,10 @@ Supports Android, Linux, MacOS and Windows.
 
 For the Android client see [Clipster-Android](https://github.com/mc51/Clipster-Android).
 To run your own server check [Clipster-Server](https://github.com/mc51/Clipster-Server).  
+  
+  
+![Clipster demo](resources/demo_long.gif)  
+  
 
 ## Easy Setup
 
