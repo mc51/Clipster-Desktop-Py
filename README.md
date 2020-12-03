@@ -32,7 +32,7 @@ Download [`clipster.exe`](https://github.com/mc51/Clipster-Desktop/releases/late
 ### MacOS
 
 Download [`clipster.zip`](https://github.com/mc51/Clipster-Desktop/releases/latest/download/clipster.zip) from the latest MacOS release, move it to `Applications` and start it. You might get a warning message, that you need to ignore. Newer MacOS versions might even prevent you from opening it entirely at first. You have two options:  
-1. Open it in the (Finder via `right click --> open`)[https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac]
+1. Open it in the [Finder via `right click --> open`](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac)
 2. After failing to open it, go to `System Preferences --> Security & Privacy`. In the `General` Tab the App will be listed and you can start it from there
   
 To automatically start Clipster, right click on the icon in your Dock and click on `Options --> Open at Login`.  
