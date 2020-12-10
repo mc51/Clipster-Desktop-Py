@@ -1,7 +1,7 @@
+import base64
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import base64
 
 try:
     # for package import
@@ -13,32 +13,55 @@ except ModuleNotFoundError:
     from config import Config
 
 
-class Crypt:
-    """encrypt and decrypt clips
+class EncryptException(Exception):
+    """ All exceptions occuring when dealing with Crypt
     """
 
-    iterations = 200000
-    password = None
-    fernet = None
-    key = None
+    pass
 
-    def __init__(self, password):
-        self.password = password
+
+class DecryptException(Exception):
+    """ All exceptions occuring when dealing with Crypt
+    """
+
+    pass
+
+
+class Crypt:
+    """ Symmetric encryption / decryption of clipboard data using Fernet
+    """
+
+    hash_iterations = 100000
+    hash_length = 32
+    fernet = None
+
+    def __init__(self, username, password):
+        """ create an encryption key by hashing the user's password and a salt
+            use that to initialize Fernet
+
+        Args:
+            username (str): Login username
+            password (str): Login password
+        """
+        salt = f"clipster_{password}_{username}".encode()
+        password = password.encode()
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA512(),
-            length=32,
-            salt=password,
-            iterations=self.iterations,
+            length=self.hash_length,
+            salt=salt,
+            iterations=self.hash_iterations,
         )
         key = kdf.derive(password)
-        print("KEY:", key)
-        self.key = base64.urlsafe_b64encode(key)
-        self.fernet = Fernet(self.key)
+        key = base64.urlsafe_b64encode(key)
+        self.fernet = Fernet(key)
 
     def encrypt(self, data):
-        token = self.fernet.encrypt(data)
-        return token
+        data = data.encode()
+        encrypted = self.fernet.encrypt(data)
+        return encrypted
 
     def decrypt(self, data):
+        data = data.encode()
         clear = self.fernet.decrypt(data)
+        clear = clear.decode()
         return clear

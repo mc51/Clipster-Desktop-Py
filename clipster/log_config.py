@@ -4,7 +4,7 @@ import platform
 from pathlib import Path
 import os
 
-LEVEL = logging.WARNING
+LEVEL = logging.DEBUG
 current_os = platform.system()
 # On Linux and Mac use /tmp
 LOG_FILE = "/tmp/clipster.log"

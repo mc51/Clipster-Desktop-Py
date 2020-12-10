@@ -6,10 +6,12 @@ try:
     # for package import
     from .log_config import log
     from .config import Config
+    from .crypt import Crypt
 except ModuleNotFoundError:
     # for direct call of clipster.py
     from log_config import log
     from config import Config
+    from crypt import Crypt
 
 
 class ApiException(Exception):
@@ -40,11 +42,13 @@ class Api:
     SERVER = None
     USER = None
     PW = None
+    crypto = None
 
     def __init__(self, server, user, pw):
         self.SERVER = server
         self.USER = user
         self.PW = pw
+        self.crypto = Crypt(user, pw)
 
     def copy(self):
         """
@@ -58,7 +62,8 @@ class Api:
         Send the copied text to SERVER
         """
         clip = self.copy()
-        payload = {"text": clip, "device": f"{Config.DEVICE_ID}"}
+        clip_encrypted = self.crypto.encrypt(clip)
+        payload = {"text": clip_encrypted, "device": f"{Config.DEVICE_ID}"}
         try:
             res = requests.post(
                 self.SERVER + "/copy-paste/",
@@ -102,6 +107,7 @@ class Api:
         else:
             if res.status_code == 200:
                 clip = json.loads(res.text)["text"]
+                clip = self.crypto.decrypt(clip)
                 log.info(f"Got new clip from SERVER:\n{clip}")
                 self.paste(clip)
                 return clip

@@ -108,22 +108,11 @@ def main():
     """
         Make sure config is valid and start main loop
     """
-    # mygui = Gui()
-    # while not Config.is_configfile_valid():
-    #     log.debug("No valid config file")
-    #     get_cred(mygui)
-    # wait_for_tray_event(mygui, Config.SERVER, Config.USER, Config.PW)
-    crypt = Crypt("mypassword".encode())
-    print("Encrypted: ", crypt.encrypt("mysecret".encode()))
-    print("Key :", crypt.key)
-    print("Key :", crypt.key.decode())
-
-    # print(
-    #     "\nDecrypted :",
-    #     crypt.decrypt(
-    #         b"gAAAAABf0VhE0AFbX-xMd6ZUrRFJhpkLnHVUInALaVRoE3BnnlSNsHUal1RXkSpH3T5jnVONQ6PlXVg5zDhYSLmh4B6vDCnx7A=="
-    #     ),
-    # )
+    mygui = Gui()
+    while not Config.is_configfile_valid():
+        log.debug("No valid config file")
+        get_cred(mygui)
+    wait_for_tray_event(mygui, Config.SERVER, Config.USER, Config.PW)
 
 
 if __name__ == "__main__":
