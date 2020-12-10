@@ -2,6 +2,7 @@ import base64
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.fernet import InvalidToken
 
 try:
     # for package import
@@ -43,7 +44,7 @@ class Crypt:
             username (str): Login username
             password (str): Login password
         """
-        salt = f"clipster_{password}_{username}".encode()
+        salt = f"clipster_{username}_{password}".encode()
         password = password.encode()
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA512(),
@@ -62,6 +63,10 @@ class Crypt:
 
     def decrypt(self, data):
         data = data.encode()
-        clear = self.fernet.decrypt(data)
+        try:
+            clear = self.fernet.decrypt(data)
+        except InvalidToken as e:
+            log.exception(f"ERROR Decrypt: {e}")
+            clear = "Error: Could not decrypt received clip".encode()
         clear = clear.decode()
         return clear
