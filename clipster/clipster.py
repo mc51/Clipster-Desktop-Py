@@ -7,15 +7,15 @@ try:
     from .config import Config
     from .log_config import log
     from .gui import Gui
-    from .api import Api
-    from .api import ApiException
+    from .api import Api, ApiException
+    from .crypt import Crypt
 except ModuleNotFoundError:
     # for direct call of clipster.py
     from config import Config
     from log_config import log
     from gui import Gui
-    from api import Api
-    from api import ApiException
+    from api import Api, ApiException
+    from crypt import Crypt
 
 
 def get_cred(mygui):
@@ -108,11 +108,22 @@ def main():
     """
         Make sure config is valid and start main loop
     """
-    mygui = Gui()
-    while not Config.is_configfile_valid():
-        log.debug("No valid config file")
-        get_cred(mygui)
-    wait_for_tray_event(mygui, Config.SERVER, Config.USER, Config.PW)
+    # mygui = Gui()
+    # while not Config.is_configfile_valid():
+    #     log.debug("No valid config file")
+    #     get_cred(mygui)
+    # wait_for_tray_event(mygui, Config.SERVER, Config.USER, Config.PW)
+    crypt = Crypt("mypassword".encode())
+    print("Encrypted: ", crypt.encrypt("mysecret".encode()))
+    print("Key :", crypt.key)
+    print("Key :", crypt.key.decode())
+
+    # print(
+    #     "\nDecrypted :",
+    #     crypt.decrypt(
+    #         b"gAAAAABf0VhE0AFbX-xMd6ZUrRFJhpkLnHVUInALaVRoE3BnnlSNsHUal1RXkSpH3T5jnVONQ6PlXVg5zDhYSLmh4B6vDCnx7A=="
+    #     ),
+    # )
 
 
 if __name__ == "__main__":
