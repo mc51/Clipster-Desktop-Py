@@ -5,12 +5,14 @@ try:
     # for package import
     from .config import Config
     from .log_config import log
+    from .crypt import Crypt
     from .api import Api
     from .api import RegisterException, LoginException
 except ModuleNotFoundError:
     # for direct call of clipster.py
     from config import Config
     from log_config import log
+    from crypt import Crypt
     from api import Api
     from api import RegisterException, LoginException
 
@@ -108,11 +110,12 @@ class Gui:
             return False
         if not self.is_valid_server_address(server):
             sg.popup(
-                f"Invalid server address: {server}\nUse format https://server.tld:port",
+                f"Invalid server address: {server}\nUse format https://domain.tld:port",
                 title=f"{Config.APP_NAME}",
             )
             return False
         log.debug(f"{server} - {user} - {pw}")
+        pw = self.password_to_hash(user, pw)
         return server, user, pw
 
     def check_cred_login_and_save(self, server, user, pw):
@@ -164,6 +167,19 @@ class Gui:
             log.debug("Registration OK. Writing config")
             Config.write_config(server, user, pw)
             return True
+
+    def password_to_hash(self, user, pw):
+        """ get PBKDF2 Hash of password
+
+        Args:
+            user (str): username
+            pw (str): password
+
+        Returns:
+            str: b64 encoded hash of password
+        """
+        crypto = Crypt(user, pw)
+        return crypto.pw_hashed
 
     def set_config_ignore_ssl_cert(self, ignore_cert):
         """ Set config option to ignore ssl certificate validty in requests

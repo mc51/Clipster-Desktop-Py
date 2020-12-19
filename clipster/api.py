@@ -66,11 +66,12 @@ class Api:
         payload = {"text": clip_encrypted, "device": f"{Config.DEVICE_ID}"}
         try:
             res = requests.post(
-                self.SERVER + "/copy-paste/",
+                self.SERVER + Config.API_COPY_PASTE,
                 data=payload,
                 auth=(self.USER, self.PW),
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
+                headers=Config.HEADERS,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in upload request")
@@ -81,7 +82,7 @@ class Api:
                 return clip
             else:
                 log.error(f"Error cannot upload clip: {res.text}")
-                raise ApiException(res.text)
+                raise ApiException(res.text[0 : Config.MAX_RESPONSE_LEN])
 
     def paste(self, data):
         """
@@ -96,10 +97,11 @@ class Api:
         log.info("downloading clip")
         try:
             res = requests.get(
-                self.SERVER + "/copy-paste/",
+                self.SERVER + Config.API_COPY_PASTE,
                 auth=(self.USER, self.PW),
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
+                headers=Config.HEADERS,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in download request")
@@ -113,20 +115,21 @@ class Api:
                 return clip
             else:
                 log.error(f"Cannot download clip: {res.status_code} - {res.text}")
-                raise ApiException(res.text)
+                raise ApiException(res.text[0 : Config.MAX_RESPONSE_LEN])
 
     @staticmethod
     def register(server, user, pw):
         """
-        register user on SERVER
+        register user on server
         """
-        payload = {"user": user, "pw": pw}
+        payload = {"username": user, "password": pw}
         try:
             res = requests.post(
-                server + "/register/",
+                server + Config.API_REGISTER,
                 data=payload,
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
+                headers=Config.HEADERS,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in register request")
@@ -137,19 +140,21 @@ class Api:
                 return True
         else:
             log.error(f"Cannot register user: {res.status_code} - {res.text}")
-            raise RegisterException(res.text)
+            raise RegisterException(res.text[0 : Config.MAX_RESPONSE_LEN])
 
     @staticmethod
     def login(server, user, pw):
         """
         authenticate user
         """
+
         try:
             res = requests.get(
-                server + "/verify-user/",
+                server + Config.API_LOGIN,
                 auth=(user, pw),
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
+                headers=Config.HEADERS,
             )
         except requests.exceptions.RequestException as e:
             log.exception("Error in login request")
@@ -159,4 +164,4 @@ class Api:
             return True
         else:
             log.error(f"Login failed: {res.status_code} - {res.text}")
-            raise LoginException(res.text)
+            raise LoginException(res.text[0 : Config.MAX_RESPONSE_LEN])

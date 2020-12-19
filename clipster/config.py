@@ -15,17 +15,23 @@ class Config:
 
     APP_NAME = "Clipster"
     DEFAULT_SERVER_URI = "https://clipster.cc:9999"
-    CLIP_CHECK_TIMEOUT = 2
     SHOW_MESSAGE_DURATION = 2000
     CONN_TIMEOUT = 6
-    KEYWORD = "clipster"
     MATCH_NONWHITESPACE = r"\S.*"
-    MATCH_SERVER = r"^(https):\/\/[^\s\/$.?#].[^\s]*:{1}(\d+|\/)*"
+    MATCH_SERVER = (
+        r"^(https):\/\/[^\s\/$.?#].[^\s]*|http://localhost:|http://127.0.0.1:"
+    )
     DEVICE_ID = f"desktop_{platform.node()}"
     PATH_CONFIG_DIR = Path.home() / ".config/clipster/"
     PATH_CONFIG_FILE = PATH_CONFIG_DIR / "config"
     CONFIGFILE_MTIME = None
     MAX_NOTIFY_LEN = 60
+    MAX_RESPONSE_LEN = 400
+
+    HEADERS = {"Accept": "application/json"}
+    API_COPY_PASTE = "/copy-paste/"
+    API_REGISTER = "/register/"
+    API_LOGIN = "/verify-user/"
     SERVER = None
     USER = None
     PW = None
