@@ -2,7 +2,7 @@
 # MC51 - Install script for Clipster Desktop Client
 # Borrowed stuff from the https://get.docker.com shell script
 set -e
-DEFAULT_SERVER="https://clipster.cc:9999"
+DEFAULT_SERVER="https://clipster.cc"
 SERVER=""
 PYTHON_EXEC=python3
 

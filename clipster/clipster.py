@@ -81,12 +81,12 @@ def deal_with_tray_event(mygui, api, event):
         sys.exit(0)
 
 
-def wait_for_tray_event(mygui, server, username, pw):
+def wait_for_tray_event(mygui, server, username, hash_login, hash_msg):
     """ Check for config modification while waiting for action in systray
     """
     log.debug("Main Loop\n")
-    log.debug(f"{server} - {username} - {pw}")
-    api = Api(server, username, pw)
+    log.debug(f"{server} - {username} - {hash_login} - {hash_msg}")
+    api = Api(server, username, hash_login, hash_msg)
 
     while True:
         if Config.was_configfile_modified():
@@ -105,14 +105,15 @@ def self_restart():
 
 
 def main():
-    """
-        Make sure config is valid and start main loop
+    """ Make sure config is valid and start main loop
     """
     mygui = Gui()
     while not Config.is_configfile_valid():
         log.debug("No valid config file")
         get_cred(mygui)
-    wait_for_tray_event(mygui, Config.SERVER, Config.USER, Config.PW)
+    wait_for_tray_event(
+        mygui, Config.SERVER, Config.USER, Config.PW_HASH_LOGIN, Config.PW_HASH_MSG,
+    )
 
 
 if __name__ == "__main__":

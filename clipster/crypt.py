@@ -26,31 +26,52 @@ class Crypt:
     """ Symmetric encryption / decryption of clipboard data using Fernet
     """
 
-    HASH_ITERATIONS = 10000
+    HASH_ITERS_LOGIN = 20000
+    HASH_ITERS_MSG = 10000
     HASH_LENGTH = 32
     fernet = None
-    pw_hashed = None
+    pw_hash_login = None
+    pw_hash_msg = None
 
-    def __init__(self, username, password):
-        """ create an encryption key by hashing the user's password and a salt
-            use that to initialize Fernet
+    def __init__(self, username, password, hash_login=None, hash_msg=None):
+        """ Create / Set hashes to be used for login and crypto by hashing the
+            user's password. Initialize Fernet with crypto hash
 
         Args:
-            username (str): Login username
-            password (str): Login password
+            username (str): Login cleartext username
+            password (str): Login cleartext password
+            hash_login (str): PW Hash for authentication
+            hash_msg (str): PW Hash for crypto
         """
-        salt = f"clipster_{username}_{password}".encode()
-        password = password.encode()
+        self.pw_hash_login = hash_login
+        self.pw_hash_msg = hash_msg
+        if password:
+            salt = f"clipster_{username}_{password}".encode()
+            password = password.encode()
+            self.pw_hash_login = self.get_hash(password, salt, self.HASH_ITERS_LOGIN)
+            self.pw_hash_msg = self.get_hash(password, salt, self.HASH_ITERS_MSG)
+        self.fernet = Fernet(self.pw_hash_msg)
+
+    def get_hash(self, password, salt, iterations):
+        """ Create PBKDF2 Hash of password
+
+        Args:
+            password (str): Password to be hashed
+            salt (str): Salt used in hashing
+            iterations (int): Hash Iterations
+
+        Returns:
+            str: Base64 urlsafe hash
+        """
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=self.HASH_LENGTH,
             salt=salt,
-            iterations=self.HASH_ITERATIONS,
+            iterations=iterations,
         )
-        key = kdf.derive(password)
-        key = base64.urlsafe_b64encode(key)
-        self.pw_hashed = key.decode()
-        self.fernet = Fernet(key)
+        hashh = kdf.derive(password)
+        hashh = base64.urlsafe_b64encode(hashh)
+        return hashh.decode()
 
     def encrypt(self, data):
         """ Returns encrypted text

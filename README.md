@@ -8,6 +8,7 @@ Copy a text on your smartphone and paste it on your desktop, or vice versa.
 Easy, secure, open source.  
 Supports Android, Linux, MacOS and Windows.  
 
+You can use the web front-end of the public server at [https://clipster.cc](https://clipster.cc).
 For the Android client see [Clipster-Android](https://github.com/mc51/Clipster-Android).
 To run your own server check [Clipster-Server](https://github.com/mc51/Clipster-Server).  
   

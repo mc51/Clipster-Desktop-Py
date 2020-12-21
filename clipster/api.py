@@ -41,14 +41,18 @@ class Api:
 
     SERVER = None
     USER = None
-    PW = None
+    HASH_LOGIN = None
+    HASH_MSG = None
     crypto = None
 
-    def __init__(self, server, user, pw):
+    def __init__(self, server, user, hash_login, hash_msg):
         self.SERVER = server
         self.USER = user
-        self.PW = pw
-        self.crypto = Crypt(user, pw)
+        self.HASH_LOGIN = hash_login
+        self.HASH_MSG = hash_msg
+        self.crypto = Crypt(
+            username=user, password=None, hash_login=hash_login, hash_msg=hash_msg
+        )
 
     def copy(self):
         """
@@ -68,7 +72,7 @@ class Api:
             res = requests.post(
                 self.SERVER + Config.API_COPY_PASTE,
                 data=payload,
-                auth=(self.USER, self.PW),
+                auth=(self.USER, self.HASH_LOGIN),
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
                 headers=Config.HEADERS,
@@ -77,7 +81,7 @@ class Api:
             log.exception("Error in upload request")
             raise ApiException(e)
         else:
-            if res.status_code == 200:
+            if res.status_code == 201:
                 log.info("Success! Copied to Cloud-Clipboard.")
                 return clip
             else:
@@ -98,7 +102,7 @@ class Api:
         try:
             res = requests.get(
                 self.SERVER + Config.API_COPY_PASTE,
-                auth=(self.USER, self.PW),
+                auth=(self.USER, self.HASH_LOGIN),
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
                 headers=Config.HEADERS,
@@ -120,9 +124,11 @@ class Api:
     @staticmethod
     def register(server, user, pw):
         """
-        register user on server
+        register user on server using hash generated from pw
         """
-        payload = {"username": user, "password": pw}
+        crypto = Crypt(user, pw)
+        login_hash = crypto.pw_hash_login
+        payload = {"username": user, "password": login_hash}
         try:
             res = requests.post(
                 server + Config.API_REGISTER,
@@ -136,8 +142,7 @@ class Api:
             raise RegisterException(e)
         if res.status_code == 201:
             log.info(f"Hi {user}! You are all set.")
-            if Config.write_config(server, user, pw):
-                return True
+            return True
         else:
             log.error(f"Cannot register user: {res.status_code} - {res.text}")
             raise RegisterException(res.text[0 : Config.MAX_RESPONSE_LEN])
@@ -145,13 +150,14 @@ class Api:
     @staticmethod
     def login(server, user, pw):
         """
-        authenticate user
+        authenticate user using hash generated from pw
         """
-
+        crypto = Crypt(user, pw)
+        login_hash = crypto.pw_hash_login
         try:
             res = requests.get(
                 server + Config.API_LOGIN,
-                auth=(user, pw),
+                auth=(user, login_hash),
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
                 headers=Config.HEADERS,

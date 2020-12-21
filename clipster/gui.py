@@ -95,100 +95,6 @@ class Gui:
         window.close()
         return True
 
-    def is_cred_input_valid(self, values):
-        """ Are credentials complete and server address valid?
-        """
-        server = values.get("server")
-        if server == "":
-            server = Config.DEFAULT_SERVER_URI
-        user = values.get("user")
-        pw = values.get("pw")
-        if user == "" or pw == "":
-            sg.popup(
-                f"Please enter an username and password", title=f"{Config.APP_NAME}",
-            )
-            return False
-        if not self.is_valid_server_address(server):
-            sg.popup(
-                f"Invalid server address: {server}\nUse format https://domain.tld:port",
-                title=f"{Config.APP_NAME}",
-            )
-            return False
-        log.debug(f"{server} - {user} - {pw}")
-        pw = self.password_to_hash(user, pw)
-        return server, user, pw
-
-    def check_cred_login_and_save(self, server, user, pw):
-        """ Can we login using credentials? If so, save to configfile
-        """
-        try:
-            Api.login(server, user, pw)
-        except LoginException as e:
-            log.error(f"Could not log in: {e}")
-            answer = sg.popup_yes_no(
-                f"Login failed\n\nServer: {server}\nUser: {user}\nPassword: {pw}\n\n"
-                f"Message: {e}\n\n"
-                "Still save your credentials to the config file?",
-                title=f"{Config.APP_NAME}",
-            )
-            if answer == "Yes":
-                log.debug("Still saving creds")
-                Config.write_config(server, user, pw)
-                return True
-            else:
-                log.debug("Retry to login")
-                return False
-        else:
-            log.debug("Logged in. Writing config")
-            Config.write_config(server, user, pw)
-            return True
-
-    def check_cred_register_and_save(self, server, user, pw):
-        """ Can we register using credentials? If so, save to configfile
-        """
-        try:
-            Api.register(server, user, pw)
-        except RegisterException as e:
-            log.error(f"Could not register: {e}")
-            answer = sg.popup_yes_no(
-                f"Registration failed\n\nServer: {server}\nUser: {user}\nPassword: {pw}\n\n"
-                f"Message: {e}\n\n"
-                "Still save your credentials to the config file?",
-                title=f"{Config.APP_NAME}",
-            )
-            if answer == "Yes":
-                log.debug("Still saving creds")
-                Config.write_config(server, user, pw)
-                return True
-            else:
-                log.debug("Retry to register")
-                return False
-        else:
-            log.debug("Registration OK. Writing config")
-            Config.write_config(server, user, pw)
-            return True
-
-    def password_to_hash(self, user, pw):
-        """ get PBKDF2 Hash of password
-
-        Args:
-            user (str): username
-            pw (str): password
-
-        Returns:
-            str: b64 encoded hash of password
-        """
-        crypto = Crypt(user, pw)
-        return crypto.pw_hashed
-
-    def set_config_ignore_ssl_cert(self, ignore_cert):
-        """ Set config option to ignore ssl certificate validty in requests
-
-        Args:
-            ignore_cert (bool): Ignore SSL certificate
-        """
-        Config.VERIFY_SSL_CERT = not ignore_cert
-
     def check_cred(self, window):
         """ Given credentials input check if we can perform action of
             login or registration on server
@@ -223,3 +129,83 @@ class Gui:
                         )
                     return True
         return False
+
+    def set_config_ignore_ssl_cert(self, ignore_cert):
+        """ Set config option to ignore ssl certificate validty in requests
+
+        Args:
+            ignore_cert (bool): Ignore SSL certificate
+        """
+        Config.VERIFY_SSL_CERT = not ignore_cert
+
+    def is_cred_input_valid(self, values):
+        """ Are credentials complete and server address valid?
+        """
+        server = values.get("server")
+        if server == "":
+            server = Config.DEFAULT_SERVER_URI
+        user = values.get("user")
+        pw = values.get("pw")
+        if user == "" or pw == "":
+            sg.popup(
+                f"Please enter an username and password", title=f"{Config.APP_NAME}",
+            )
+            return False
+        if not self.is_valid_server_address(server):
+            sg.popup(
+                f"Invalid server address: {server}\nUse format https://domain.tld:port",
+                title=f"{Config.APP_NAME}",
+            )
+            return False
+        log.debug(f"{server} - {user} - {pw}")
+        return server, user, pw
+
+    def check_cred_login_and_save(self, server, user, pw):
+        """ Can we login using credentials? If so, save to configfile
+        """
+        try:
+            Api.login(server, user, pw)
+        except LoginException as e:
+            log.error(f"Could not log in.\nPW: {pw}\nError: {e}")
+            answer = sg.popup_yes_no(
+                f"Login failed\n\nServer: {server}\nUser: {user}\nPassword: {pw}\n\n"
+                f"Message: {e}\n\n"
+                "Still save your credentials to the config file?",
+                title=f"{Config.APP_NAME}",
+            )
+            if answer == "Yes":
+                log.debug("Still saving creds")
+                Config.write_config(server, user, pw)
+                return True
+            else:
+                log.debug("Retry to login")
+                return False
+        else:
+            log.debug("Logged in. Writing config")
+            Config.write_config(server, user, pw)
+            return True
+
+    def check_cred_register_and_save(self, server, user, pw):
+        """ Can we register using credentials? If so, save to configfile
+        """
+        try:
+            Api.register(server, user, pw)
+        except RegisterException as e:
+            log.error(f"Could not register.\nPW: {pw}\nError: {e}")
+            answer = sg.popup_yes_no(
+                f"Registration failed\n\nServer: {server}\nUser: {user}\nPassword: {pw}\n\n"
+                f"Message: {e}\n\n"
+                "Still save your credentials to the config file?",
+                title=f"{Config.APP_NAME}",
+            )
+            if answer == "Yes":
+                log.debug("Still saving creds")
+                Config.write_config(server, user, pw)
+                return True
+            else:
+                log.debug("Retry to register")
+                return False
+        else:
+            log.debug("Registration OK. Writing config")
+            Config.write_config(server, user, pw)
+            return True

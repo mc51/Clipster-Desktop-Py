@@ -6,15 +6,17 @@ from pathlib import Path
 try:
     # for package import
     from .log_config import log
+    from .crypt import Crypt
 except ModuleNotFoundError:
     # for direct call of clipster.py
     from log_config import log
+    from crypt import Crypt
 
 
 class Config:
 
     APP_NAME = "Clipster"
-    DEFAULT_SERVER_URI = "https://clipster.cc:9999"
+    DEFAULT_SERVER_URI = "https://clipster.cc"
     SHOW_MESSAGE_DURATION = 2000
     CONN_TIMEOUT = 6
     MATCH_NONWHITESPACE = r"\S.*"
@@ -35,6 +37,8 @@ class Config:
     SERVER = None
     USER = None
     PW = None
+    PW_HASH_LOGIN = None
+    PW_HASH_MSG = None
     VERIFY_SSL_CERT = True
 
     def __init__(self):
@@ -56,7 +60,7 @@ class Config:
 
     @classmethod
     def is_configfile_valid(cls):
-        """ Check if we have a valid config
+        """ Check if we have a valid config, read it and save values
         """
         log.debug("Validating config")
         conf = configparser.ConfigParser()
@@ -65,11 +69,12 @@ class Config:
             try:
                 cls.SERVER = conf.get("settings", "server")
                 cls.USER = conf.get("settings", "username")
-                cls.PW = conf.get("settings", "password")
+                cls.PW_HASH_LOGIN = conf.get("settings", "hash_login")
+                cls.PW_HASH_MSG = conf.get("settings", "hash_msg")
                 cls.VERIFY_SSL_CERT = conf.getboolean("settings", "verify_ssl_cert")
             except (configparser.NoSectionError, KeyError):
                 return False
-            if cls.SERVER and cls.USER and cls.PW:
+            if cls.SERVER and cls.USER and cls.PW_HASH_LOGIN and cls.PW_HASH_MSG:
                 log.debug("Config ok")
                 return True
         return False
@@ -81,13 +86,15 @@ class Config:
         log.debug(
             f"Writing config file: {server} {username} {password} {cls.VERIFY_SSL_CERT}"
         )
+        crypto = Crypt(username, password)
         cls.PATH_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         cls.PATH_CONFIG_FILE.touch(exist_ok=True)
         config = configparser.ConfigParser()
         config["settings"] = {
             "server": server,
             "username": username,
-            "password": password,
+            "hash_login": crypto.pw_hash_login,
+            "hash_msg": crypto.pw_hash_msg,
             "verify_ssl_cert": cls.VERIFY_SSL_CERT,
         }
         with open(cls.PATH_CONFIG_FILE, "w") as configfile:
