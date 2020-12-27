@@ -18,7 +18,7 @@ except ModuleNotFoundError:
 
 
 class Gui:
-
+    # Define Systray menu
     menu_def = [
         "BLANK",
         [
@@ -32,12 +32,27 @@ class Gui:
         ],
     ]
 
+    # Define own color theme
+    sg.LOOK_AND_FEEL_TABLE["Clipster"] = {
+        "BACKGROUND": "1234567890",
+        "TEXT": "1234567890",
+        "INPUT": "1234567890",
+        "TEXT_INPUT": "1234567890",
+        "SCROLL": "1234567890",
+        "BUTTON": ("white", "black"),
+        "PROGRESS": ("#01826B", "#D0D0D0"),
+        "BORDER": 1,
+        "SLIDER_DEPTH": 1,
+        "PROGRESS_DEPTH": 0,
+    }
+
     tray = None
     def_server = Config.DEFAULT_SERVER_URI
     def_user = ""
     def_pw = ""
 
     def __init__(self):
+        sg.theme("Clipster")
         self.tray = sg.SystemTray(menu=self.menu_def, data_base64=Config.ICON_B64)
 
     def create_cred_layout(self):
