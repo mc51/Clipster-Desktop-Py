@@ -54,13 +54,6 @@ class Api:
             username=user, password=None, hash_login=hash_login, hash_msg=hash_msg
         )
 
-    def copy(self):
-        """
-        Return the current clipboard text
-        """
-        data = pyperclip.paste()
-        return data
-
     def upload(self):
         """
         Send the copied text to SERVER
@@ -88,17 +81,11 @@ class Api:
                 log.error(f"Error cannot upload clip: {res.text}")
                 raise ApiException(res.text[0 : Config.MAX_RESPONSE_LEN])
 
-    def paste(self, data):
-        """
-        Copies 'data' to local clipboard which enables pasting.
-        """
-        pyperclip.copy(data)
-
     def download(self):
         """
-        Downloads from SERVER and updates the local clipboard.
+        Download clips from SERVER and updates the local clipboard
         """
-        log.info("downloading clip")
+        log.info("downloading clips")
         try:
             res = requests.get(
                 self.SERVER + Config.API_COPY_PASTE,
@@ -112,14 +99,32 @@ class Api:
             raise ApiException(e)
         else:
             if res.status_code == 200:
-                clip = json.loads(res.text)["text"]
-                clip = self.crypto.decrypt(clip)
-                log.info(f"Got new clip from SERVER:\n{clip}")
-                self.paste(clip)
-                return clip
+                clips_decrypted = []
+                log.debug(json.loads(res.text))
+                clips = json.loads(res.text)
+                for clip in clips:
+                    clips_decrypted.append(self.crypto.decrypt(clip["text"]))
+                log.info(f"Got new clip from SERVER:\n{clips_decrypted}")
+                self.paste(clips_decrypted[-1])
+                return clips_decrypted
             else:
-                log.error(f"Cannot download clip: {res.status_code} - {res.text}")
+                log.error(f"Cannot download clips: {res.status_code} - {res.text}")
                 raise ApiException(res.text[0 : Config.MAX_RESPONSE_LEN])
+
+    @staticmethod
+    def paste(data):
+        """
+        Copies 'data' to local clipboard which enables pasting.
+        """
+        pyperclip.copy(data)
+
+    @staticmethod
+    def copy():
+        """
+        Return the current clipboard text
+        """
+        data = pyperclip.paste()
+        return data
 
     @staticmethod
     def register(server, user, pw):

@@ -46,11 +46,12 @@ def set_clip(mygui, api):
         )
 
 
-def get_clip(mygui, api):
-    """ Download clip from server and display tray notification
+def get_clip(mygui, api, all_clips=False):
+    """ Download clips from server and display single tray notification
+        or list of all Clips
     """
     try:
-        clip = api.download()
+        clips = api.download()
     except ApiException as e:
         mygui.tray.show_message(
             f"{Config.APP_NAME} - Get Clip Error",
@@ -59,21 +60,28 @@ def get_clip(mygui, api):
             time=Config.SHOW_MESSAGE_DURATION,
         )
     else:
-        mygui.tray.show_message(
-            f"{Config.APP_NAME} - Got Clip",
-            f"{clip[0:Config.MAX_NOTIFY_LEN]}",
-            data_base64=Config.ICON_B64,
-            time=Config.SHOW_MESSAGE_DURATION,
-        )
+        if all_clips:
+            mygui.show_clip_list_window(clips)
+            return True
+        else:
+            mygui.tray.show_message(
+                f"{Config.APP_NAME} - Got Clip",
+                f"{clips[-1][0:Config.MAX_NOTIFY_LEN]}",
+                data_base64=Config.ICON_B64,
+                time=Config.SHOW_MESSAGE_DURATION,
+            )
+            return True
 
 
 def deal_with_tray_event(mygui, api, event):
     """ React to menu actions in tray
     """
     log.info(event)
-    if event == "Get Clip":
-        get_clip(mygui, api)
-    elif event == "Set Clip":
+    if event == "Get last Clip":
+        get_clip(mygui, api, False)
+    if event == "Get all Clips":
+        get_clip(mygui, api, True)
+    elif event == "Share Clip":
         set_clip(mygui, api)
     elif event == "Edit Credentials":
         get_cred(mygui)

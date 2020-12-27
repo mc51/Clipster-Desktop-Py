@@ -29,6 +29,7 @@ class Config:
     CONFIGFILE_MTIME = None
     MAX_NOTIFY_LEN = 60
     MAX_RESPONSE_LEN = 400
+    MAX_CLIP_PREVIEW_LEN = 200
 
     HEADERS = {"Accept": "application/json"}
     API_COPY_PASTE = "/copy-paste/"

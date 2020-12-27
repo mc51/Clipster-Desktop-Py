@@ -21,7 +21,15 @@ class Gui:
 
     menu_def = [
         "BLANK",
-        ["&Get Clip", "&Set Clip", "---", "&Edit Credentials", "---", "E&xit"],
+        [
+            "&Get last Clip",
+            "Get &all Clips",
+            "&Share Clip",
+            "---",
+            "&Edit Credentials",
+            "---",
+            "E&xit",
+        ],
     ]
 
     tray = None
@@ -72,6 +80,36 @@ class Gui:
             ],
         ]
         return layout
+
+    def show_clip_list_window(self, clips):
+        """ Show all received clips in a Windows with a Listview and allow
+            user select and copy an entry
+        """
+        # TODO: Show Only preview of Clip to reduce length
+        layout = [
+            [
+                sg.Listbox(
+                    values=clips,
+                    size=(60, 6),
+                    select_mode="LISTBOX_SELECT_MODE_SINGLE",
+                    key="sel_clip",
+                )
+            ],
+            [sg.Button("Copy to clipboard", size=(20, 1)), sg.Cancel(size=(20, 1))],
+        ]
+        window = sg.Window(
+            title=f"{Config.APP_NAME} - Your Clips",
+            layout=layout,
+            size=(600, 300),
+            icon=Config.ICON_B64,
+        )
+        event, values = window.read()
+        if event in (sg.WIN_CLOSED, "Cancel"):
+            log.debug("List Clips selection canceled")
+            pass
+        elif event == "Copy to clipboard":
+            Api.paste(values.get("sel_clip")[0])
+        window.close()
 
     def is_valid_server_address(self, server):
         """ Does server address match the format?
