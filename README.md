@@ -125,8 +125,8 @@ Clipster will add an Icon to your system tray which you can click for opening up
 
 ## Roadmap
 
-- [x] Encrypt clipboard locally and only transmit encrypted data to server
-- [x] Add clipboard history
+- [x] Encrypt / Decrypt clipboard locally and only transmit encrypted data to server
+- [x] Add clipboard history: share multiple Clips
 - [ ] Support image sharing
 - [ ] iOS Client
 
