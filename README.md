@@ -6,7 +6,7 @@
 Clipster is a multi platform cloud clipboard:  
 Copy a text on your smartphone and paste it on your desktop, or vice versa.  
 Easy, secure, open source.  
-Supports Android, Linux, MacOS and Windows.  
+Supports Android, Linux, MacOS, Windows and all browsers.   
 
 You can use the web front-end of the public server at [clipster.cc](https://clipster.cc).  
 For the Android client see [Clipster-Android](https://github.com/mc51/Clipster-Android).  
@@ -28,7 +28,7 @@ The install script takes care of everything.
 
 ### Windows
 
-Download [`clipster.exe`](https://github.com/mc51/Clipster-Desktop/releases/latest/download/clipster.exe) from the latest Windows release and start it. To automatically start Clipster, open the current user's autostart folder by opening Explorer and typing `shell:startup`. Copy `clipster.exe` there. 
+Download [`clipster.exe`](https://github.com/mc51/Clipster-Desktop/releases/latest/download/clipster.exe) from the latest Windows release and start it. To automatically start Clipster, open the current user's auto-start folder by opening Explorer and typing `shell:startup`. Copy `clipster.exe` there. 
 
 ### MacOS
 
@@ -113,11 +113,6 @@ If all went fine, you should see:
 
 Now, you can [use](#usage) clipster!
 
-## Windows & MacOS
-
-coming soon ...
-
-
 ## Usage
 
 On the first startup, you can either register a new account or enter your existing credentials for the login. Your credentials will be stored in your `HOMEPATH` in `./config/clipster/config`.  
@@ -129,8 +124,9 @@ Clipster will add an Icon to your system tray which you can click for opening up
 
 ## Planned features
 
-- Encrypt clipboard locally and only transmit encrypted data to server
-- Add clipboard history
+- [x] Encrypt clipboard locally and only transmit encrypted data to server
+- [x] Add clipboard history
+- [ ] Support image sharing
 - iOS Client
 
 

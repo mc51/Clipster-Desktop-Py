@@ -83,12 +83,13 @@ class Api:
 
     def download(self):
         """
-        Download clips from SERVER and updates the local clipboard
+        Download last or all clips from SERVER and updates the local clipboard
         """
         log.info("downloading clips")
+        url = self.SERVER + Config.API_COPY_PASTE
         try:
             res = requests.get(
-                self.SERVER + Config.API_COPY_PASTE,
+                url=url,
                 auth=(self.USER, self.HASH_LOGIN),
                 timeout=Config.CONN_TIMEOUT,
                 verify=Config.VERIFY_SSL_CERT,
@@ -99,17 +100,30 @@ class Api:
             raise ApiException(e)
         else:
             if res.status_code == 200:
-                clips_decrypted = []
-                log.debug(json.loads(res.text))
-                clips = json.loads(res.text)
-                for clip in clips:
-                    clips_decrypted.append(self.crypto.decrypt(clip["text"]))
-                log.info(f"Got new clip from SERVER:\n{clips_decrypted}")
+                clips_decrypted = self.parse_and_decrypt_response(res)
+                log.info(f"Got new clips from SERVER:\n{clips_decrypted}")
                 self.paste(clips_decrypted[-1])
                 return clips_decrypted
             else:
                 log.error(f"Cannot download clips: {res.status_code} - {res.text}")
                 raise ApiException(res.text[0 : Config.MAX_RESPONSE_LEN])
+
+    def parse_and_decrypt_response(self, response):
+        """ Parse list clip response and decrypt content
+        Returns:
+            List: Contains one or more clips. Ordered by creation date (DESC)
+        """
+        clips_decrypted = []
+        try:
+            clips = json.loads(response.text)
+            for clip in clips:
+                clips_decrypted.append(self.crypto.decrypt(clip["text"]))
+            if len(clips) == 0:
+                clips_decrypted = ["There are no shared Clips yet"]
+        except Exception as e:
+            log.e(f"Could not parse and decrypt: {e}")
+            clips_decrypted = [""]
+        return clips_decrypted
 
     @staticmethod
     def paste(data):

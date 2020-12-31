@@ -32,14 +32,14 @@ def set_clip(mygui, api):
         clip = api.upload()
     except ApiException as e:
         mygui.tray.show_message(
-            f"{Config.APP_NAME} - Set Clip Error",
-            f"Error setting Clip:\n{e}",
+            f"{Config.APP_NAME} - Share Clip Error",
+            f"Error sharing Clip:\n{e}",
             data_base64=Config.ICON_B64,
             time=Config.SHOW_MESSAGE_DURATION,
         )
     else:
         mygui.tray.show_message(
-            f"{Config.APP_NAME} - Set Clip",
+            f"{Config.APP_NAME} - shared Clip",
             f"{clip[0:Config.MAX_NOTIFY_LEN]}",
             data_base64=Config.ICON_B64,
             time=Config.SHOW_MESSAGE_DURATION,
