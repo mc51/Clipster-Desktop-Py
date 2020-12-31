@@ -116,18 +116,19 @@ Now, you can [use](#usage) clipster!
 ## Usage
 
 On the first startup, you can either register a new account or enter your existing credentials for the login. Your credentials will be stored in your `HOMEPATH` in `./config/clipster/config`.  
-Clipster will add an Icon to your system tray which you can click for opening up a menu.  
-`Get Clip` will fetch the clipboard content from the server.  
-`Set Clip` will send your current clipboard to the server. Then, it's available for all your devices.  
+Clipster will add an Icon to your system tray which you can click for opening up a menu with the following options:  
+`Get last Clip` will fetch the last shared Clip from the server.  
+`Get all Clips` will fetch all shared Clips from the server.  
+`Share Clip` will share your current clipboard. Then, it's available for all your devices.  
 `Edit Credentials` allows you to register a new account or change your login credentials.  
 `Exit` will terminate the app.  
 
-## Planned features
+## Roadmap
 
 - [x] Encrypt clipboard locally and only transmit encrypted data to server
 - [x] Add clipboard history
 - [ ] Support image sharing
-- iOS Client
+- [ ] iOS Client
 
 
 ## Contributions
