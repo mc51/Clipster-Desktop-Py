@@ -202,7 +202,6 @@ if command_exists clipster; then
     confirm
 else
     echo "OK: No previous clipster installation found."
-    echo
 fi
 
 
@@ -220,15 +219,24 @@ if command_exists $PYTHON_EXEC; then
     if ${PYTHON_EXEC} -m pip -V; then
         echo
         echo "OK: Found pip. Ready to install clipster-desktop python package and requirements"
-        echo
+        set +e
         ${PYTHON_EXEC} -m pip install --user .
+        if [ $? -ne 0 ]; then
+            # pip install --user will fail in virtualenvs, catch error and try again without it
+            echo
+            echo "ERROR: When using a virtualenv, we can't use pip install --user. Trying again without it..."
+            set -e
+            ${PYTHON_EXEC} -m pip install .
+        fi
     else
         echo
         echo "ERROR: Could not find pip, which is required. Learn how to install it here: https://pip.pypa.io/en/stable/installing/"
         exit 1
     fi
 else
+    echo
     echo "ERROR: Coult not find $PYTHON_EXEC exectuable. Make sure python is available "
+    echo
 fi
 
 if command_exists xsel || command_exists xclip || is_darwin; then
