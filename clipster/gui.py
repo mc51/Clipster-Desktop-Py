@@ -210,6 +210,12 @@ class Gui:
                 title=f"{Config.APP_NAME}",
             )
             return False
+        if len(pw) < Config.MIN_PW_LENGTH:
+            sg.popup(
+                f"Your password must have at least 8 characters ",
+                title=f"{Config.APP_NAME}",
+            )
+            return False
         log.debug(f"{server} - {user} - {pw}")
         return server, user, pw
 

@@ -30,6 +30,7 @@ class Config:
     MAX_NOTIFY_LEN = 60
     MAX_RESPONSE_LEN = 400
     MAX_CLIP_PREVIEW_LEN = 200
+    MIN_PW_LENGTH = 8
 
     HEADERS = {"Accept": "application/json"}
     API_COPY_PASTE = "/copy-paste/"
