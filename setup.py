@@ -11,7 +11,7 @@ long_description = re.sub(r"!\[Clipster demo\].+?\)", "", long_description)
 
 setup(
     name="clipster-desktop",
-    version="0.4.3",
+    version="0.4.4a",
     description="Multi Platform Cloud Clipboard - Desktop Client",
     long_description_content_type="text/markdown",
     long_description=long_description,
