@@ -36,11 +36,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
-            TARGET: ubuntu
-            CMD_BUILD: pyinstaller -F -n clipster -i resources/clipster.ico cli.py
-            OUT_FILE_NAME: clipster
-            ASSET_MIME: application/octet-stream
           - os: macos-latest
             TARGET: macos
             CMD_BUILD: pyinstaller -F -w -n clipster -i resources/clipster.icns cli.py && cd dist/ && zip -r9 clipster clipster.app/
