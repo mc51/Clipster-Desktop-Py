@@ -1,5 +1,6 @@
 cryptography
 twine
+build
 pyperclip
 PySide2
 PySimpleGUI
