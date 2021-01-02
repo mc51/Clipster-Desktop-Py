@@ -22,7 +22,7 @@ Install via pip:
 ``` bash
 pip install clipster-desktop
 ```
-
+  
 Alternatively, install the latest version from GitHub:  
 Copy and paste the following in the console to clone the git repo and start the `install.sh` script:
 
@@ -60,6 +60,7 @@ Clipster will add an Icon to your system tray which you can click for opening up
 
 - [x] Encrypt / Decrypt clipboard locally and only transmit encrypted data to server
 - [x] Add clipboard history: share multiple Clips
+- [ ] Add PyPi package
 - [ ] Support image sharing
 - [ ] iOS Client  
   
