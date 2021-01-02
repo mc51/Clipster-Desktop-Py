@@ -1,8 +1,9 @@
 cryptography
-pyperclip==1.8.0
-PySide2==5.15.1
-PySimpleGUI==4.30.0
-PySimpleGUIQt==0.35.0
-requests==2.24.0
-pyinstaller==4.0
-pyinstaller-hooks-contrib==2020.10
+twine
+pyperclip
+PySide2
+PySimpleGUI
+PySimpleGUIQt
+requests
+pyinstaller
+pyinstaller-hooks-contrib
