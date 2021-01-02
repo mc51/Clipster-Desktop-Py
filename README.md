@@ -1,6 +1,6 @@
 # Clipster - Desktop Client
 
-[![GitHub Actions Build Workflow](https://github.com/mc51/Clipster-Desktop/workflows/Build/badge.svg)](https://github.com/mc51/Clipster-Desktop/actions)
+[![GitHub Actions Build Workflow](https://github.com/mc51/Clipster-Desktop/workflows/Build/badge.svg)](https://github.com/mc51/Clipster-Desktop/actions) [![PyPi version](https://img.shields.io/pypi/v/clipster-desktop.svg)](https://pypi.org/project/clipster-desktop)  
 
 Clipster is a multi platform cloud clipboard:  
 Copy a text on your smartphone and paste it on your desktop, or vice versa.  
@@ -23,8 +23,8 @@ Install via pip:
 pip install clipster-desktop
 ```
 
-Install the latest version from GitHub:
-Copy and paste the following in bash to clone the git repo and start the `install.sh` script:
+Alternatively, install the latest version from GitHub:  
+Copy and paste the following in the console to clone the git repo and start the `install.sh` script:
 
 ``` bash
 git clone https://github.com/mc51/Clipster-Desktop.git && cd Clipster-Desktop && sh install.sh
