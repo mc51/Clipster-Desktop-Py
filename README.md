@@ -23,14 +23,15 @@ Install via pip:
 pip install clipster-desktop
 ```
 
-Then, `clipster` will be available as a terminal command. To have it automatically start, execute the following setup script:
+Then, `clipster` will be available as a terminal command. To enable auto-start, execute the following setup script:
 
 ``` bash
-clipster_autostart.sh
+clipster_enable.sh
 ```
 
-This will make sure Clipster is automatically started by [systemd](https://en.wikipedia.org/wiki/Systemd).  
+This will add a Clipster service to [systemd](https://en.wikipedia.org/wiki/Systemd). (To disable auto-start, run `clipster_disable.sh`)  
   
+
 Alternatively, install the latest version from GitHub. Copy and paste the following in the console to clone the git repo and start the `install.sh` script:
 
 ``` bash

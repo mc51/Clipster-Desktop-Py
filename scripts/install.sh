@@ -256,6 +256,7 @@ Description=Clipster - A Multi Platform Cloud Clipboard
 After=network.target
 
 [Service]
+Environment="DISPLAY=:0.0"
 WorkingDirectory=/tmp
 ExecStart=$PATH_CLIPSTER
 ExecReload=/bin/kill -s HUP \$MAINPID

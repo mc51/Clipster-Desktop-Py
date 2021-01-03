@@ -1,6 +1,6 @@
 #!/bin/sh
 # MC51 - Install script for Clipster Desktop Client
-# Install autostart for pip installed pip package
+# Autostart clipster using systemd
 
 set -e
 
@@ -32,7 +32,7 @@ confirm() {
 
 
 echo
-echo "*** Clipster - Script for autostart installation ***"
+echo "*** Clipster - Enabling autostart via systemd ***"
 echo
 
 if is_darwin; then
@@ -50,7 +50,7 @@ if [ "$userid" -ne 0 ]; then
         sh_c="su -c"
     else
         echo
-        echo "ERROR: installer needs the ability to run commands as root"
+        echo "ERROR: script needs the ability to run commands as root"
         echo "Unable to find either "sudo" or "su" to make this happen."
         echo
         exit 1
@@ -85,6 +85,7 @@ Description=Clipster Desktop - A Multi Platform Cloud Clipboard
 After=network.target
 
 [Service]
+Environment="DISPLAY=:0.0"
 WorkingDirectory=/tmp
 ExecStart=$PATH_CLIPSTER
 ExecReload=/bin/kill -s HUP \$MAINPID
