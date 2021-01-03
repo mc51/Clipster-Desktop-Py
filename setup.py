@@ -11,7 +11,7 @@ long_description = re.sub(r"!\[Clipster demo\].+?\)", "", long_description)
 
 setup(
     name="clipster-desktop",
-    version="0.4.4",
+    version="0.4.5a",
     description="Multi Platform Cloud Clipboard - Desktop Client",
     long_description_content_type="text/markdown",
     long_description=long_description,
@@ -30,8 +30,9 @@ setup(
     ],
     python_requires=">=3.6",
     zip_safe=False,
+    scripts=["scripts/clipster_autostart.sh"],
     entry_points={"console_scripts": ["clipster = clipster.clipster:main"]},
-    package_data={"icon": ["resources/clipster.ico"],},
+    package_data={"clipster": ["resources/clipster.ico"]},
     classifiers=[
         "Topic :: Desktop Environment",
         "Topic :: Internet :: WWW/HTTP",

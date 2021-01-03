@@ -2,8 +2,6 @@
 # MC51 - Install script for Clipster Desktop Client
 # Borrowed stuff from the https://get.docker.com shell script
 set -e
-DEFAULT_SERVER="https://clipster.cc"
-SERVER=""
 PYTHON_EXEC=python3
 
 command_exists() {
@@ -84,11 +82,6 @@ confirm() {
             false
             ;;
     esac
-}
-
-ask_for_server_address() {
-    echo
-    read -r -p "Please enter the Clipster server adress [Enter for default: $DEFAULT_SERVER]: " SERVER
 }
 
 install_reqs() {
@@ -263,7 +256,6 @@ Description=Clipster - A Multi Platform Cloud Clipboard
 After=network.target
 
 [Service]
-Environment="DISPLAY=:0.0"
 WorkingDirectory=/tmp
 ExecStart=$PATH_CLIPSTER
 ExecReload=/bin/kill -s HUP \$MAINPID
